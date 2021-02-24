@@ -32,10 +32,11 @@ ggplot(widths) +
 # quality scores
 qual = quality(fq)
 numqscores = as(qual, "matrix") # converts to numeric scores automatically
-avgscores = rowMeans(numqscores) 
+avgscores = rowMeans(numqscores, na.rm=T) 
 avgscores = as.data.frame(avgscores)
 ggplot(avgscores) + 
   geom_histogram(aes(x=avgscores))
 
 # GC content
+alphabetFrequency(reads)[,1:4] # BioStrings count letter frequencies
 
