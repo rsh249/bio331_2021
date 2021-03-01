@@ -24,7 +24,7 @@ ggplot(GC.freq) +
   scale_fill_manual(values=c('steelblue', 'darkorange')) +
   theme_minimal()
 
-# kmer counting
+# explore a genome
 # get a genome:
 download.file('ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/bacteria/Escherichia_coli/reference/GCF_000005845.2_ASM584v2/GCF_000005845.2_ASM584v2_genomic.fna.gz',
               'genome.fna.gz')
@@ -36,17 +36,36 @@ geno.freq = alphabetFrequency(genome, as.prob=T)[,1:4]
 geno.f = data.frame(GC=numeric(), AT=)
 geno.freq[[1]] + geno.freq[[4]]
 geno.freq[[2]] + geno.freq[[3]]
-# Ir'a ~50:50? Typical for E. coli: http://dro.deakin.edu.au/eserv/DU:30034416/chen-bacterialgenomic-2010.pdf
+# ~50:50? Typical for E. coli: http://dro.deakin.edu.au/eserv/DU:30034416/chen-bacterialgenomic-2010.pdf
 
+slidingGC = letterFrequencyInSlidingView(genome[[1]], 
+                                         view.width=100000,
+                                         letters=c("C", "G"), 
+                                         as.prob = T)
+slidingGC = as.data.frame(slidingGC)
+slidingGC$ratio = slidingGC$G - slidingGC$C
+slidingGC$position = 1:nrow(slidingGC)
 
+#sample to 100,000 nucleotide bins
+sampleGC = slidingGC[seq(1, nrow(slidingGC), by=100000),]
 
+ggplot(sampleGC) +
+  geom_path(aes(x = position, y = ratio)) +
+  theme_minimal() 
 
-kmers = oligonucleotideFrequency(genome, width = 9)
+# where does the ratio go from neg to pos?
+print(sampleGC)
+# search kmers here: 370000 to 380000
+
+#trim genome 
+target_area = genome[[1]][370000:380000] #use string index
+
+kmers = oligonucleotideFrequency(target_area, width = 9)
 kmers = as.data.frame(kmers)
-longkmers = tidyr::pivot_longer(kmers, cols=names(kmers))
-longkmers$value = as.numeric(longkmers$value)
+kmers$count = as.numeric(kmers$kmers)
+found = kmers[kmers$kmers>=3,]
+found$kmers = rownames(found)
 
-ggplot(longkmers) + 
-  geom_col(aes(x=reorder(name, value), y=value)) +
-  theme(axis.text.x = element_text(angle=90)) 
-     
+ggplot(found) +
+  geom_col(aes(x=kmers, y=count)) +
+  theme(axis.text.x = element_text(angle=90))
