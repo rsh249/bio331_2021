@@ -24,7 +24,18 @@ bwa mem data_process/ecoli_rel606.fasta \
 head results_process/sam/SRR2584863.sam
 
 # set up for next two samples
-
+for infile in *_1.fastq
+do
+  base=$(basename ${infile} _1.fastq)
+  trimmomatic PE -threads 4 data_process/${base}_1.fastq data_process/${base}_2.fastq \
+    data_process/${base}_1.trim.fastq data_process/${base}_1.untrim.fastq \
+    data_process/${base}_2.trim.fastq data_process/${base}_2.untrim.fastq \
+    SLIDINGWINDOW:4:20 MINLEN:25 ILLUMINACLIP:NexteraPE-PE.fa:2:40:15
+    
+  bwa mem data_process/ecoli_rel606.fasta \
+    data_process/${base}_1.trim.fastq data_process/${base}_1.trim.fastq \
+    > results_process/sam/${base}.sam0
+done
 
 
 
