@@ -4,8 +4,9 @@
 cd data_process
 curl -L -o ecoli_rel606.fasta.gz ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/017/985/GCA_000017985.1_ASM1798v1/GCA_000017985.1_ASM1798v1_genomic.fna.gz
 gunzip ecoli_rel606.fasta.gz
-cd ..
 
+
+cd ..
 
 mkdir results_process
 mkdir -p results_process/sam results_process/bam results_process/vcf
