@@ -1,12 +1,12 @@
 mkdir genome_assembly
 cd genome_assembly
-
 mkdir data
 
 
 # copy raw data with human RNA filtered out
 # unmapped.*.fq
 cp /projectnb2/ct-shbioinf/bio331/assemble/data/unmapped.*.fq ./data/
+
 fastqc -t 2 data/unmapped.*.fq
 
 
