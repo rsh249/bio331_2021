@@ -25,8 +25,13 @@ megahit -t 8 -1 data/unmapped.R1.fq -2 data/unmapped.R2.fq  -o dirMEGAHIT
 assemblyMH=dirMEGAHIT/final.contigs.fa
 reads1=data/unmapped.R1.fq
 reads2=data/unmapped.R2.fq
-
 quast.py -o quast_output --pe1 $reads1 --pe2 $reads2 --glimmer -t 4 -m 1000 -l "MEGAHIT" $assemblyMH
+
+
+curl -o 'Wuhan-Hu1.fasta' 'https://www.ncbi.nlm.nih.gov/sviewer/viewer.cgi?tool=portal&save=file&log$=seqview&db=nuccore&report=fasta&id=1798174254&extrafeat=null&conwithfeat=on&hide-cdd=on'
+
+ref=Wuhan-Hu1.fasta
+quast.py -R $ref -o quast_output --pe1 $reads1 --pe2 $reads2 --glimmer -t 4 -m 10000 -l "MEGAHIT" $assemblyMH
 
 
 
