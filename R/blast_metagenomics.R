@@ -2,6 +2,9 @@ library(rBLAST)
 library(ggplot2)
 library(parallel)
 library(taxonomizr) # install.packages('taxonomizr') #run if not already installed
+library(ggplot2)
+library(forcats)
+
 
 # set up a new working directory
 dir.create('metagenomics')
@@ -53,7 +56,7 @@ clus = makeCluster('16', type ='FORK');
 splits = clusterSplit(clus, fq)
 p_cl = parLapply(clus, splits, parpredict)
 stopCluster(clus)
-cl = dplyr::bind_rows(p_cl) # bring results back into one dataframe
+cl = dplyr::bind_rdata:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAAWElEQVR42mNgGPTAxsZmJsVqQApgmGw1yApwKcQiT7phRBuCzzCSDSHGMKINIeDNmWQlA2IigKJwIssQkHdINgxfmBBtGDEBS3KCxBc7pMQgMYE5c/AXPwAwSX4lV3pTWwAAAABJRU5ErkJggg==ows(p_cl) # bring results back into one dataframe
 ##### END PARALLEL COMPUTING ##### 
 
 # set up access to taxonomizr database
@@ -74,3 +77,11 @@ taxlist=getTaxonomy(ids, taxaNodes, taxaNames)
 cltax=cbind(cl,taxlist)
 
 
+#filter and visualize results
+
+summary(cltax)
+cltax95 <- cltax[which(cltax$Perc.Ident>95 & cltax$Alignment.Length>140),]
+unique(cltax95$family)
+ggplot(cltax95) +
+  geom_bar(aes(x=fct_infreq(family))) +
+  theme(axis.text.x = element_text(angle = 90))
