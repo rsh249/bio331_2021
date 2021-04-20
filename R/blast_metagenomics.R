@@ -2,7 +2,6 @@ library(rBLAST)
 library(ggplot2)
 library(parallel)
 library(taxonomizr) # install.packages('taxonomizr') #run if not already installed
-library(ggplot2)
 library(forcats)
 
 
